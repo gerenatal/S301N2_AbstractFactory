@@ -1,29 +1,28 @@
+import Address.Address;
+import Phone.Phone;
+
 import java.util.Scanner;
 public class Main {
-    private static Scanner scanner = new Scanner(System.in);
-    private static Notebook notebook = new Notebook();
-
     public static void main(String[] args) {
-        menu();
+        Notebook notebook = new Notebook();
+        menu(notebook);
     }
-    public static void menu() {
+    public static void menu(Notebook notebook) {
         boolean exit = false;
         while (!exit) {
-            System.out.println("""
+            String choice = lineInput("""
                     1. Add contact
-                    2. Print contact
+                    2. Display contacts
                     3. Exit
                     Enter your choice:""");
-            int choice = scanner.nextInt();
-            scanner.nextLine();
             switch (choice) {
-                case 1:
-                    addContact();
+                case "1":
+                    addContact(notebook);
                     break;
-                case 2:
+                case "2":
                     notebook.printContacts();
                     break;
-                case 3:
+                case "3":
                     exit = true;
                     break;
                 default:
@@ -31,16 +30,33 @@ public class Main {
             }
         }
     }
-    public static void addContact() {
-        System.out.print("Enter name: ");
-        String name = scanner.nextLine();
-        System.out.print("Enter address: ");
-        String address = scanner.nextLine();
-        System.out.print("Enter phone number: ");
-        String phoneNumber = scanner.nextLine();
+    static void addContact(Notebook notebook) {
+        String region = lineInput("Enter region: ");
+        String name = lineInput("Enter name: ");
 
-        Contact contact = new Contact(name, address, phoneNumber);
-        notebook.addContact(contact);
-        System.out.println("Contact added successfully.");
+        String uncheckedAddress = lineInput("Enter address: ");
+        AbstractFactory addressFactory = FactoryProducer.getFactory("Address");
+        Address address = addressFactory.getAddress(region);
+        String checkedAddress = address.checkAddress(uncheckedAddress) ? uncheckedAddress : null;
+
+
+        String uncheckedPhoneNumber = lineInput("Enter phone number: ");
+        AbstractFactory phoneFactory = FactoryProducer.getFactory("Phone");
+        Phone phone = phoneFactory.getPhone(region);
+        String checkedPhoneNumber = phone.checkPhone(uncheckedPhoneNumber) ? uncheckedPhoneNumber : null;
+
+        if(checkedAddress != null && checkedPhoneNumber != null){
+            Contact contact = new Contact(name, checkedAddress, checkedPhoneNumber);
+            notebook.addContact(contact);
+            System.out.println("Contact added successfully.");
+        }else{
+            System.out.println("Some incorrect input, contact not saved!");
+        }
+    }
+
+    static String lineInput(String message){
+        Scanner in = new Scanner(System.in);
+        System.out.println(message);
+        return in.nextLine();
     }
 }

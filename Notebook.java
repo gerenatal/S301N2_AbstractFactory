@@ -9,6 +9,8 @@ public class Notebook {
         contactList.add(contact);
     }
     public void printContacts(){
-        //implement later to save in a txt file
+        for (Contact contact : contactList) {
+            System.out.println(contact.getName() + ", " + contact.getAddress() + ", " + contact.getPhoneNumber());
+        }
     }
 }
