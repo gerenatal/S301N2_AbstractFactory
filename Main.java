@@ -1,6 +1,7 @@
 import Address.Address;
+import Factory.AbstractFactory;
+import Factory.FactoryProducer;
 import Phone.Phone;
-
 import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
@@ -34,16 +35,17 @@ public class Main {
         String region = lineInput("Enter region: ");
         String name = lineInput("Enter name: ");
 
-        String uncheckedAddress = lineInput("Enter address: ");
+        String addressWithoutZip = lineInput("Enter address: ");
+        String uncheckedZipCode = lineInput("Enter zip code: ");
         AbstractFactory addressFactory = FactoryProducer.getFactory("Address");
         Address address = addressFactory.getAddress(region);
-        String checkedAddress = address.checkAddress(uncheckedAddress) ? uncheckedAddress : null;
+        String checkedAddress = address.checkZipCode(uncheckedZipCode) ? (addressWithoutZip + ", " + uncheckedZipCode) : null;
 
 
         String uncheckedPhoneNumber = lineInput("Enter phone number: ");
         AbstractFactory phoneFactory = FactoryProducer.getFactory("Phone");
         Phone phone = phoneFactory.getPhone(region);
-        String checkedPhoneNumber = phone.checkPhone(uncheckedPhoneNumber) ? uncheckedPhoneNumber : null;
+        String checkedPhoneNumber = phone.checkPhone(uncheckedPhoneNumber) ? (phone.prefix().toString() + " " + uncheckedPhoneNumber) : null;
 
         if(checkedAddress != null && checkedPhoneNumber != null){
             Contact contact = new Contact(name, checkedAddress, checkedPhoneNumber);
