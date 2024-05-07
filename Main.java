@@ -1,13 +1,15 @@
-import Address.Address;
+import Contact.Address;
 import Factory.AbstractFactory;
 import Factory.FactoryProducer;
-import Phone.Phone;
+import Contact.Phone;
 import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
         Notebook notebook = new Notebook();
         menu(notebook);
     }
+
     public static void menu(Notebook notebook) {
         boolean exit = false;
         while (!exit) {
@@ -31,6 +33,7 @@ public class Main {
             }
         }
     }
+
     static void addContact(Notebook notebook) {
         String region = lineInput("Enter region: ");
         String name = lineInput("Enter name: ");
@@ -38,25 +41,32 @@ public class Main {
         String addressWithoutZip = lineInput("Enter address: ");
         String uncheckedZipCode = lineInput("Enter zip code: ");
         AbstractFactory addressFactory = FactoryProducer.getFactory("Address");
+        assert addressFactory != null;
         Address address = addressFactory.getAddress(region);
         String checkedAddress = address.checkZipCode(uncheckedZipCode) ? (addressWithoutZip + ", " + uncheckedZipCode) : null;
 
-
         String uncheckedPhoneNumber = lineInput("Enter phone number: ");
         AbstractFactory phoneFactory = FactoryProducer.getFactory("Phone");
+        assert phoneFactory != null;
         Phone phone = phoneFactory.getPhone(region);
-        String checkedPhoneNumber = phone.checkPhone(uncheckedPhoneNumber) ? (phone.prefix().toString() + " " + uncheckedPhoneNumber) : null;
+        String checkedPhoneNumber = phone.checkPhone(uncheckedPhoneNumber) ? (phone.prefix() + " " + uncheckedPhoneNumber) : null;
 
-        if(checkedAddress != null && checkedPhoneNumber != null){
+        if (checkedAddress != null && checkedPhoneNumber != null) {
             Contact contact = new Contact(name, checkedAddress, checkedPhoneNumber);
             notebook.addContact(contact);
             System.out.println("Contact added successfully.");
-        }else{
-            System.out.println("Some incorrect input, contact not saved!");
+        } else {
+            if (checkedAddress == null) {
+                System.out.println("Invalid address format.");
+            }
+            if (checkedPhoneNumber == null) {
+                System.out.println("Invalid phone number format.");
+            }
+            System.out.println("Contact not saved.");
         }
     }
 
-    static String lineInput(String message){
+    static String lineInput(String message) {
         Scanner in = new Scanner(System.in);
         System.out.println(message);
         return in.nextLine();

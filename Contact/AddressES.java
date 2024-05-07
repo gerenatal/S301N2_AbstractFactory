@@ -1,4 +1,4 @@
-package Address;
+package Contact;
 public class AddressES implements Address {
     @Override
     public boolean checkZipCode(String zip){

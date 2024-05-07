@@ -1,5 +1,5 @@
-package Phone;
-import Phone.Phone;
+package Contact;
+
 public class PhoneBR implements Phone {
     @Override
     public boolean checkPhone(String phoneNumber) {

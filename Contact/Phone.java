@@ -1,4 +1,4 @@
-package Phone;
+package Contact;
 
 public interface Phone {
     boolean checkPhone(String phoneNumber);
